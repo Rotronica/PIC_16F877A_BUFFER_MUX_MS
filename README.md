@@ -50,7 +50,7 @@
   <ol>
     <li> Lo primero que hace es acceder al buffer de caracteres que contiene el mensaja: display_buffer[display_state] para tomar el dato de este array depende del estado de la 
          variable display_state que tambien esta variable controla la activacion de cada display.</li>
-    <li> Una vez con el dato del buffer display_buffer[ ] este será el dato para tomar el dato del array DATO[ ].</li>
+    <li> Una vez con el dato del buffer display_buffer[ ] este será el dato para tomar el dato del array DATOS[ ].</li>
   </ol>
 </p>
 <h3> Sentencia que activa cada display</h3>
