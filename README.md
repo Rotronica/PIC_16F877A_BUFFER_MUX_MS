@@ -26,16 +26,16 @@
 
   ```c
   // Apagar todos los displays
-        MUX_PORT &= ~MUX_PINS;
+        PINES_MUX &= ~DISPLAY_MASK;
   ```
-  Lo que hace es apagar los 4 pines que hacen control de la activación de cada display de forma segura implementando una mascara donde  MUX_PINS = 0x0F y MUX_PORT = PORTA
+  Lo que hace es apagar los 4 pines que hacen control de la activación de cada display de forma segura implementando una mascara donde  DISPLAY_MASK = 0x0F y PINES_MUX = PORTA
   entonces:
   <ol>
-    <li> ~MUX_PINS: Invierte los bits de la máscara (si MUX_PINS = 0x0F → ~0x0F = 0xF0)</li>
+    <li> ~DISPLAY_MASK: Invierte los bits de la máscara (si DISPLAY_MASK = 0x0F → ~0x0F = 0xF0)</li>
     <li> &=: Realiza un AND bit a bit con el valor actual del puerto, preservando los otros bits no relacionados</li>
   </ol>
-  Entonces inicialmente MUX_PORT tiene un valor de 0x00 y MUX_PINS = 0x0F la sentencia tiene la siguiente forma  MUX_PORT =  MUX_PORT & ~MUX_PINS,
-  remplazando valores: MUX_PORT = 0b00000000 & 0b11110000 resultado aplicando and MUX_PORT = 0b00000000, esto hace que los pines encargados de la activación 
+  Entonces inicialmente PINES_MUX tiene un valor de 0x00 y DISPLAY_MASK = 0x0F la sentencia tiene la siguiente forma  PINES_MUX =  PINES_MUX & ~DISPLAY_MASK,
+  remplazando valores: PINES_MUX = 0b00000000 & 0b11110000 resultado aplicando and PINES_MUX = 0b00000000, esto hace que los pines encargados de la activación 
   de los display se apaguen de forma segura sin afectar a los demas pines si esque se hace uso para otras funcionalidades.
 </p>
 <h3>Sentencia que se encarga de tomar los datos para cada letra en cada display </h3>
@@ -44,13 +44,13 @@
 
   ```c
   // Mostrar el carácter actual
-  DISPLAY_PORT = CARACTERES[display_buffer[display_state]];
+  PUERTO_VISUALIZADOR = DATOS[display_buffer[display_state]];
   ```
-  Se encarga de tomar el caracter correspondiente y visualizarlo por el PORTD que esta inicializado con la variable DISPLAY_PORT. La forma de tomar los caracteres tiene estos pasos:
+  Se encarga de tomar el caracter correspondiente y visualizarlo por el PORTD que esta inicializado con la variable PUERTO_VISUALIZADOR. La forma de tomar los caracteres tiene estos pasos:
   <ol>
     <li> Lo primero que hace es acceder al buffer de caracteres que contiene el mensaja: display_buffer[display_state] para tomar el dato de este array depende del estado de la 
          variable display_state que tambien esta variable controla la activacion de cada display.</li>
-    <li> Una vez con el dato del buffer display_buffer[ ] este será el dato para tomar el dato del array CARACTER[ ].</li>
+    <li> Una vez con el dato del buffer display_buffer[ ] este será el dato para tomar el dato del array DATO[ ].</li>
   </ol>
 </p>
 <h3> Sentencia que activa cada display</h3>
@@ -63,9 +63,9 @@
   ```
 Esto es equivalente a:
 ```c
- MUX_PORT = MUX_PORT | (1 << display_state);
+ PINES_MUX = MUX_PORT | (1 << display_state);
   ```
-Inicialmente MUX_PORT sera igual a 0x00 y la instrucción (1 << display_state) desplaza el bit 1 a la izquierda display_state posiciones
+Inicialmente PINES_MUX sera igual a 0x00 y la instrucción (1 << display_state) desplaza el bit 1 a la izquierda display_state posiciones
 </p>
 <h3>Sentencia que se encarga de avanzar la activacion de los display</h3>
 <p>
@@ -88,13 +88,13 @@ Inicialmente MUX_PORT sera igual a 0x00 y la instrucción (1 << display_state) d
         last_mux = now;
         
         // Apagar todos los displays
-        MUX_PORT &= ~MUX_PINS;
+        PINES_MUX &= ~DISPLAY_MASK;
         
         // Mostrar el carácter actual
-        DISPLAY_PORT = CARACTERES[display_buffer[display_state]];
+        PUERTO_VISUALIZADOR = DATOS[display_buffer[display_state]];
         
         // Activar el display correspondiente
-        MUX_PORT |= (1 << display_state);
+        PINES_MUX |= (1 << display_state);
         
         // Avanzar al siguiente display
         display_state = (display_state + 1) % NUM_DISPLAYS;
